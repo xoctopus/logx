@@ -110,5 +110,22 @@ func ExampleLogger() {
 		// @ts=20250208-204404.397 @lv=err @src=github.com/xoctopus/logx_test/logx_test.go:101 @msg=span1 span1.depth=1
 	}
 
+	{
+		logx.SetLogFormat(logx.LogFormatJSON)
+		ctx = logx.WithLogger(context.Background(), logx.Std(logx.NewHandler()))
+
+		_, log := logx.Enter(ctx, "k1", "v1")
+		log.Debug("test %d", 1)
+		log.Info("test %d", 1)
+		log.Warn(errors.New("error message"))
+		log.Error(errors.New("error message"))
+		log.End()
+
+		// {"@ts":"20251103-161757.172","@lv":"deb","@src":"github.com/xoctopus/logx_test/logx_test.go:118","@msg":"test 1","github.com/xoctopus/logx_test.ExampleLogger":{"k1":"v1"}}
+		// {"@ts":"20251103-161757.172","@lv":"inf","@src":"github.com/xoctopus/logx_test/logx_test.go:119","@msg":"test 1","github.com/xoctopus/logx_test.ExampleLogger":{"k1":"v1"}}
+		// {"@ts":"20251103-161757.172","@lv":"wrn","@src":"github.com/xoctopus/logx_test/logx_test.go:120","@msg":"error message","github.com/xoctopus/logx_test.ExampleLogger":{"k1":"v1"}}
+		// {"@ts":"20251103-161757.172","@lv":"err","@src":"github.com/xoctopus/logx_test/logx_test.go:121","@msg":"error message","github.com/xoctopus/logx_test.ExampleLogger":{"k1":"v1"}}
+	}
+
 	// Output:
 }
