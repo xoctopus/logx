@@ -40,13 +40,13 @@ func NewHandler() slog.Handler {
 		h.h = slog.NewTextHandler(os.Stderr, &slog.HandlerOptions{
 			AddSource:   true,
 			Level:       gLogLevel,
-			ReplaceAttr: replacer,
+			ReplaceAttr: Replacer,
 		})
 	} else {
 		h.h = slog.NewJSONHandler(os.Stderr, &slog.HandlerOptions{
 			AddSource:   true,
 			Level:       gLogLevel,
-			ReplaceAttr: replacer,
+			ReplaceAttr: Replacer,
 		})
 	}
 	return h
@@ -76,10 +76,19 @@ func (h *Handler) Enabled(ctx context.Context, lv slog.Level) bool {
 	return h.h.Enabled(ctx, lv)
 }
 
-func replacer(_ []string, a slog.Attr) slog.Attr {
+type SecurityStringer interface {
+	SecurityString() string
+}
+
+func Replacer(_ []string, a slog.Attr) slog.Attr {
 	if a.Value.Kind() == slog.KindTime {
 		a.Value = slog.StringValue(a.Value.Time().Format("20060102-150405.000"))
 	}
+
+	if x, ok := a.Value.Any().(SecurityStringer); ok {
+		a.Value = slog.StringValue(x.SecurityString())
+	}
+
 	switch a.Key {
 	case slog.TimeKey:
 		a.Key = "@ts"
@@ -94,6 +103,8 @@ func replacer(_ []string, a slog.Attr) slog.Attr {
 		dir, file := filepath.Split(s.Function)
 		pkg := dir + file[0:strings.Index(file, ".")]
 		a.Value = slog.StringValue(pkg + "/" + filepath.Base(s.File) + ":" + strconv.Itoa(s.Line))
+	case "password":
+		a.Value = slog.StringValue("****")
 	}
 	return a
 }
