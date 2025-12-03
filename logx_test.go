@@ -2,9 +2,8 @@ package logx_test
 
 import (
 	"context"
+	"errors"
 	"strconv"
-
-	"github.com/pkg/errors"
 
 	"github.com/xoctopus/logx"
 )
