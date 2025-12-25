@@ -28,7 +28,7 @@ func ExampleLogger() {
 
 	{
 		logx.SetLogLevel(logx.LogLevelError)
-		ctx = logx.WithLogger(context.Background(), logx.Std(logx.NewHandler()))
+		ctx = logx.With(context.Background(), logx.Std(logx.NewHandler()))
 		_, log := logx.Start(ctx, "span2", "k2", "v2")
 
 		log.Debug("test %d", 2)
@@ -42,7 +42,7 @@ func ExampleLogger() {
 
 	{
 		logx.SetLogFormat(logx.LogFormatTEXT)
-		ctx = logx.WithLogger(context.Background(), logx.Std(logx.NewHandler()))
+		ctx = logx.With(context.Background(), logx.Std(logx.NewHandler()))
 		_, log := logx.Start(ctx, "span3")
 
 		// ...
@@ -59,7 +59,7 @@ func ExampleLogger() {
 	}
 
 	{
-		ctx = logx.WithLogger(context.Background(), logx.Discard())
+		ctx = logx.With(context.Background(), logx.Discard())
 		_, log := logx.Start(ctx, "span4")
 		log = log.With("k4", "v4")
 
@@ -73,8 +73,8 @@ func ExampleLogger() {
 	}
 
 	{
-		ctx = logx.WithLogger(context.Background(), logx.Std(logx.NewHandler()))
-		_, log := logx.FromContext(ctx).Start(ctx, "span5", "k5", "v5")
+		ctx = logx.With(context.Background(), logx.Std(logx.NewHandler()))
+		_, log := logx.From(ctx).Start(ctx, "span5", "k5", "v5")
 
 		log.Debug("test %d", 5)
 		log.Info("test %d", 5)
@@ -92,17 +92,17 @@ func ExampleLogger() {
 
 		f = func(ctx context.Context, depth, current int) {
 			name := "span" + strconv.Itoa(current)
-			_, log := logx.FromContext(ctx).Start(ctx, name, "depth", current)
+			_, log := logx.From(ctx).Start(ctx, name, "depth", current)
 			defer log.End()
 
 			if current < depth {
-				f(logx.WithLogger(ctx, log), depth, current+1)
+				f(logx.With(ctx, log), depth, current+1)
 			}
 
 			log.Error(errors.New(name))
 		}
 
-		ctx = logx.WithLogger(context.Background(), logx.Std(logx.NewHandler()))
+		ctx = logx.With(context.Background(), logx.Std(logx.NewHandler()))
 		f(ctx, 2, 1)
 
 		// @ts=20250208-204404.397 @lv=err @src=github.com/xoctopus/logx_test/logx_test.go:101 @msg=span2 span1.depth=1 span1.span1/span2.depth=2
@@ -111,7 +111,7 @@ func ExampleLogger() {
 
 	{
 		logx.SetLogFormat(logx.LogFormatJSON)
-		ctx = logx.WithLogger(context.Background(), logx.Std(logx.NewHandler()))
+		ctx = logx.With(context.Background(), logx.Std(logx.NewHandler()))
 
 		_, log := logx.Enter(ctx, "k1", "v1")
 		log.Debug("test %d", 1)

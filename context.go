@@ -8,13 +8,19 @@ import (
 
 type k struct{}
 
-func WithLogger(ctx context.Context, l Logger) context.Context {
+func With(ctx context.Context, l Logger) context.Context {
 	return contextx.WithValue(ctx, k{}, l)
 }
 
-func FromContext(ctx context.Context) Logger {
+func From(ctx context.Context) Logger {
 	if l, ok := ctx.Value(k{}).(Logger); ok {
 		return l
 	}
 	return DefaultStd()
+}
+
+func Carry(l Logger) contextx.Carrier {
+	return func(ctx context.Context) context.Context {
+		return With(ctx, l)
+	}
 }
