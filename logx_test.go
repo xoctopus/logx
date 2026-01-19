@@ -42,7 +42,7 @@ func ExampleLogger() {
 
 	{
 		logx.SetLogFormat(logx.LogFormatTEXT)
-		ctx = logx.With(context.Background(), logx.Std(logx.NewHandler()))
+		ctx = logx.Carry(logx.Std(logx.NewHandler()))(context.Background())
 		_, log := logx.Start(ctx, "span3")
 
 		// ...

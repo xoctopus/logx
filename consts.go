@@ -1,8 +1,19 @@
 package logx
 
-import (
-	"log/slog"
+import "log/slog"
+
+type LogFormat uint8
+
+const (
+	LogFormatJSON LogFormat = iota
+	LogFormatTEXT
 )
+
+var gLogFormat = LogFormatJSON
+
+func SetLogFormat(f LogFormat) {
+	gLogFormat = f
+}
 
 type LogLevel = slog.Level
 
@@ -25,3 +36,12 @@ var gLevelString = map[slog.Level]string{
 	slog.LevelWarn:  "wrn",
 	slog.LevelError: "err",
 }
+
+const (
+	KEY_TIMESTAMP = "@ts"
+	KEY_LEVEL     = "@lv"
+	KEY_MESSAGE   = "@msg"
+	KEY_SOURCE    = "@src"
+)
+
+const TIME_FORMAT = "20060102-150405.000"

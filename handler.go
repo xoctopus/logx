@@ -82,10 +82,11 @@ type SecurityStringer interface {
 
 func Replacer(_ []string, a slog.Attr) slog.Attr {
 	if a.Value.Kind() == slog.KindTime {
-		a.Value = slog.StringValue(a.Value.Time().Format("20060102-150405.000"))
+		a.Value = slog.StringValue(a.Value.Time().Format(TIME_FORMAT))
 	}
 
-	if x, ok := a.Value.Any().(SecurityStringer); ok {
+	x, ok := a.Value.Any().(SecurityStringer)
+	if ok {
 		a.Value = slog.StringValue(x.SecurityString())
 	}
 
@@ -104,7 +105,9 @@ func Replacer(_ []string, a slog.Attr) slog.Attr {
 		pkg := dir + file[0:strings.Index(file, ".")]
 		a.Value = slog.StringValue(pkg + "/" + filepath.Base(s.File) + ":" + strconv.Itoa(s.Line))
 	case "password":
-		a.Value = slog.StringValue("****")
+		if !ok {
+			a.Value = slog.StringValue("--------")
+		}
 	}
 	return a
 }
