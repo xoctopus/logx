@@ -3,6 +3,7 @@ package logx
 import (
 	"context"
 	"runtime"
+	"strings"
 )
 
 type Logger interface {
@@ -28,6 +29,10 @@ func Start(ctx context.Context, name string, kvs ...any) (context.Context, Logge
 
 func Enter(ctx context.Context, kvs ...any) (context.Context, Logger) {
 	pc, _, _, _ := runtime.Caller(1)
-	name := runtime.FuncForPC(pc).Name()
+	parts := strings.Split(runtime.FuncForPC(pc).Name(), "/")
+	name := ""
+	if len(parts) > 0 {
+		name = parts[len(parts)-1]
+	}
 	return From(ctx).Start(ctx, name, kvs...)
 }

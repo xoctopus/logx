@@ -1,6 +1,16 @@
 
 <a name="HEAD"></a>
-## [HEAD](https://github.com/xoctopus/x/compare/v0.1.2...HEAD)
+## [HEAD](https://github.com/xoctopus/x/compare/v0.2.0...HEAD)
+
+> 2026-02-09
+
+### Doc
+
+* update CHANGELOG
+
+
+<a name="v0.2.0"></a>
+## [v0.2.0](https://github.com/xoctopus/x/compare/v0.1.2...v0.2.0)
 
 > 2026-02-09
 

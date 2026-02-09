@@ -37,7 +37,7 @@ func ExampleLogger() {
 
 	{
 		handlers.SetLogLevel(handlers.LogLevelError)
-		ctx = logx.With(context.Background(), logx.New(handlers.Std()))
+		ctx = logx.With(context.Background(), logx.NewStd())
 		_, log := logx.Start(ctx, "span2", "k2", "v2")
 
 		log.Debug("test %d", 2)
@@ -51,7 +51,7 @@ func ExampleLogger() {
 
 	{
 		handlers.SetLogFormat(handlers.LogFormatTEXT)
-		ctx = logx.Carry(logx.New(handlers.Std()))(context.Background())
+		ctx = logx.Carry(logx.NewZap())(context.Background())
 		_, log := logx.Start(ctx, "span3")
 
 		// ...
@@ -82,7 +82,7 @@ func ExampleLogger() {
 	}
 
 	{
-		ctx = logx.With(context.Background(), logx.New(handlers.Std()))
+		ctx = logx.With(context.Background(), logx.NewZero())
 		_, log := logx.From(ctx).Start(ctx, "span5", "k5", "v5")
 
 		log.Debug("test %d", 5)

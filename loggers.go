@@ -5,6 +5,8 @@ import (
 	"fmt"
 	"log/slog"
 	"strings"
+
+	"github.com/xoctopus/logx/handlers"
 )
 
 func New(h slog.Handler) Logger {
@@ -12,6 +14,18 @@ func New(h slog.Handler) Logger {
 		ctx: context.Background(),
 		l:   slog.New(h),
 	}
+}
+
+func NewStd() Logger {
+	return New(handlers.Std())
+}
+
+func NewZap() Logger {
+	return New(handlers.Zap())
+}
+
+func NewZero() Logger {
+	return New(handlers.Zero())
 }
 
 type std struct {
