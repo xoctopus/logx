@@ -7,14 +7,7 @@ import (
 	"strings"
 )
 
-func DefaultStd() Logger {
-	return &std{
-		ctx: context.Background(),
-		l:   slog.New(DefaultHandler()),
-	}
-}
-
-func Std(h slog.Handler) Logger {
+func New(h slog.Handler) Logger {
 	return &std{
 		ctx: context.Background(),
 		l:   slog.New(h),

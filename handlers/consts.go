@@ -1,4 +1,4 @@
-package logx
+package handlers
 
 import "log/slog"
 

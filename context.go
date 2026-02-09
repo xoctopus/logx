@@ -4,19 +4,21 @@ import (
 	"context"
 
 	"github.com/xoctopus/x/contextx"
+
+	"github.com/xoctopus/logx/handlers"
 )
 
-type k struct{}
+type tLogContext struct{}
 
 func With(ctx context.Context, l Logger) context.Context {
-	return contextx.WithValue(ctx, k{}, l)
+	return contextx.WithValue(ctx, tLogContext{}, l)
 }
 
 func From(ctx context.Context) Logger {
-	if l, ok := ctx.Value(k{}).(Logger); ok {
+	if l, ok := ctx.Value(tLogContext{}).(Logger); ok {
 		return l
 	}
-	return DefaultStd()
+	return New(handlers.Std())
 }
 
 func Carry(l Logger) contextx.Carrier {

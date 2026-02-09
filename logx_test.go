@@ -3,9 +3,18 @@ package logx_test
 import (
 	"context"
 	"errors"
+	"io"
+	"log/slog"
 	"strconv"
+	"testing"
+	"time"
+
+	"github.com/rs/zerolog"
+	"go.uber.org/zap"
+	"go.uber.org/zap/zapcore"
 
 	"github.com/xoctopus/logx"
+	"github.com/xoctopus/logx/handlers"
 )
 
 func ExampleLogger() {
@@ -27,8 +36,8 @@ func ExampleLogger() {
 	}
 
 	{
-		logx.SetLogLevel(logx.LogLevelError)
-		ctx = logx.With(context.Background(), logx.Std(logx.NewHandler()))
+		handlers.SetLogLevel(handlers.LogLevelError)
+		ctx = logx.With(context.Background(), logx.New(handlers.Std()))
 		_, log := logx.Start(ctx, "span2", "k2", "v2")
 
 		log.Debug("test %d", 2)
@@ -41,8 +50,8 @@ func ExampleLogger() {
 	}
 
 	{
-		logx.SetLogFormat(logx.LogFormatTEXT)
-		ctx = logx.Carry(logx.Std(logx.NewHandler()))(context.Background())
+		handlers.SetLogFormat(handlers.LogFormatTEXT)
+		ctx = logx.Carry(logx.New(handlers.Std()))(context.Background())
 		_, log := logx.Start(ctx, "span3")
 
 		// ...
@@ -73,7 +82,7 @@ func ExampleLogger() {
 	}
 
 	{
-		ctx = logx.With(context.Background(), logx.Std(logx.NewHandler()))
+		ctx = logx.With(context.Background(), logx.New(handlers.Std()))
 		_, log := logx.From(ctx).Start(ctx, "span5", "k5", "v5")
 
 		log.Debug("test %d", 5)
@@ -85,8 +94,8 @@ func ExampleLogger() {
 	}
 
 	{
-		logx.SetLogFormat(logx.LogFormatTEXT)
-		logx.SetLogLevel(logx.LogLevelDebug)
+		handlers.SetLogFormat(handlers.LogFormatTEXT)
+		handlers.SetLogLevel(handlers.LogLevelDebug)
 
 		var f func(ctx context.Context, depth, current int)
 
@@ -102,7 +111,7 @@ func ExampleLogger() {
 			log.Error(errors.New(name))
 		}
 
-		ctx = logx.With(context.Background(), logx.Std(logx.NewHandler()))
+		ctx = logx.With(context.Background(), logx.New(handlers.Std()))
 		f(ctx, 2, 1)
 
 		// @ts=20250208-204404.397 @lv=err @src=github.com/xoctopus/logx_test/logx_test.go:101 @msg=span2 span1.depth=1 span1.span1/span2.depth=2
@@ -110,8 +119,8 @@ func ExampleLogger() {
 	}
 
 	{
-		logx.SetLogFormat(logx.LogFormatJSON)
-		ctx = logx.With(context.Background(), logx.Std(logx.NewHandler()))
+		handlers.SetLogFormat(handlers.LogFormatJSON)
+		ctx = logx.With(context.Background(), logx.New(handlers.Std()))
 
 		_, log := logx.Enter(ctx, "k1", "v1")
 		log.Debug("test %d", 1)
@@ -127,4 +136,109 @@ func ExampleLogger() {
 	}
 
 	// Output:
+}
+
+var v = struct {
+	A    string    `json:"a"`
+	B    int       `json:"b"`
+	Time time.Time `json:"time"`
+}{
+	A:    "a",
+	B:    10,
+	Time: time.Now(),
+}
+
+func BenchmarkUnderlyings(b *testing.B) {
+	handlers.SetLogFormat(handlers.LogFormatJSON)
+
+	lzap := zap.New(
+		zapcore.NewCore(
+			zapcore.NewJSONEncoder(zap.NewProductionEncoderConfig()),
+			zapcore.AddSync(io.Discard),
+			zap.InfoLevel,
+		),
+	)
+	lstd := slog.New(slog.NewTextHandler(io.Discard, nil))
+	lzero := zerolog.New(io.Discard)
+
+	b.Run("std", func(b *testing.B) {
+		b.ResetTimer()
+		for range b.N {
+			lstd.Info("string", "key", "value")
+			lstd.Info("any", "key", v)
+			lstd.Error("fields", "int", 1, "string", "string")
+		}
+	})
+	b.Run("zap", func(b *testing.B) {
+		b.ResetTimer()
+		for range b.N {
+			lzap.Info("string", zap.String("key", "value"))
+			lzap.Info("any", zap.Any("key", v))
+			lzap.Error("fields", zap.Int("int", 1), zap.String("string", "string"))
+		}
+	})
+	b.Run("zero", func(b *testing.B) {
+		b.ResetTimer()
+		for range b.N {
+			lzero.Info().Str("key", "value").Msg("string")
+			lzero.Info().Any("key", v).Msg("any")
+			lzero.Error().Int("int", 1).Str("string", "string").Msg("fields")
+		}
+	})
+}
+
+// handlers
+var (
+	hstd  = handlers.Std(io.Discard).WithGroup("std")
+	hzap  = handlers.Zap(io.Discard).WithGroup("zap")
+	hzero = handlers.Zero(io.Discard).WithGroup("zero")
+)
+
+// loggers
+var (
+	lstd  = logx.New(hstd)
+	lzap  = logx.New(hzap)
+	lzero = logx.New(hzero)
+)
+
+func Example_loggers() {
+	lzap.With("key", "value").Info("string")
+	lzap.With("key", v).Info("any")
+	lzap.With("int", 1, "string", "string").Error(errors.New("fields"))
+
+	lstd.With("key", "value").Info("string")
+	lstd.With("key", v).Info("any")
+	lstd.With("int", 1, "string", "string").Error(errors.New("fields"))
+
+	lzero.With("key", "value").Info("string")
+	lzero.With("key", v).Info("any")
+	lzero.With("int", 1, "string", "string").Error(errors.New("fields"))
+
+	// Output:
+}
+
+func BenchmarkLoggers(b *testing.B) {
+	b.Run("std", func(b *testing.B) {
+		for range b.N {
+			lstd.With("logger", "std", "key", "value").Info("string")
+			lstd.With("logger", "std", "key", v).Info("any")
+			lstd.With("logger", "std", "int", 1, "string", "string").Error(errors.New("fields"))
+		}
+	})
+
+	b.Run("zap", func(b *testing.B) {
+		for range b.N {
+			lzap.With("logger", "zap", "key", "value").Info("string")
+			lzap.With("logger", "zap", "key", v).Info("any")
+			lzap.With("logger", "zap", "int", 1, "string", "string").Error(errors.New("fields"))
+		}
+	})
+
+	b.Run("zero", func(b *testing.B) {
+		for range b.N {
+			lzero.With("key", "value").Info("string")
+			lzero.With("key", v).Info("any")
+			lzero.With("int", 1, "string", "string").Error(errors.New("fields"))
+		}
+	})
 }
