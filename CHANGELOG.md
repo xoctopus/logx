@@ -2,7 +2,15 @@
 <a name="HEAD"></a>
 ## [HEAD](https://github.com/xoctopus/x/compare/v0.1.2...HEAD)
 
-> 0001-01-01
+> 2026-02-09
+
+### Chore
+
+* **deps:** bump github.com/xoctopus/x from 0.2.1 to 0.3.0
+
+### Feat
+
+* wrap zap, zero handler
 
 
 <a name="v0.1.2"></a>
