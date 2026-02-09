@@ -21,6 +21,7 @@ func ExampleLogger() {
 	ctx := context.Background()
 
 	{
+		logx.SetLogFormat(handlers.LogFormatTEXT)
 		_, log := logx.Start(ctx, "span1", "k1", "v1")
 
 		log.Debug("test %d", 1)
@@ -29,10 +30,10 @@ func ExampleLogger() {
 		log.Error(errors.New("error message"))
 
 		log.End()
-		// 2025/02/08 16:36:00 DEBUG test 1 span1.k1=v1
-		// 2025/02/08 16:36:00 INFO test 1 span1.k1=v1
-		// 2025/02/08 16:36:00 WARN error message span1.k1=v1
-		// 2025/02/08 16:36:00 ERROR error message span1.k1=v1
+		// @ts=20260209-201505.159 @lv=deb @src=logx/logx_test.go:27 @msg="test 1" span1.k1=v1
+		// @ts=20260209-201505.160 @lv=inf @src=logx/logx_test.go:28 @msg="test 1" span1.k1=v1
+		// @ts=20260209-201505.160 @lv=wrn @src=logx/logx_test.go:29 @msg="error message" span1.k1=v1
+		// @ts=20260209-201505.160 @lv=err @src=logx/logx_test.go:30 @msg="error message" span1.k1=v1
 	}
 
 	{
@@ -44,7 +45,7 @@ func ExampleLogger() {
 		log.Info("test %d", 2)
 		log.Warn(errors.New("error message"))
 		log.Error(errors.New("error message"))
-		// {"@ts":"20250208-163600.300","@lv":"err","@src":"github.com/xoctopus/logx_test/logx_test.go:31","@msg":"error message","span2":{"k2":"v2"}}
+		// {"@ts":"20250208-163600.300","@lv":"err","@src":"logx_test/logx_test.go:31","@msg":"error message","span2":{"k2":"v2"}}
 
 		log.End()
 	}
@@ -64,7 +65,7 @@ func ExampleLogger() {
 		log.Error(errors.New("error message"))
 
 		log.End()
-		// @ts=20250208-163600.301 @lv=err @src=github.com/xoctopus/logx_test/logx_test.go:47 @msg="error message" span3.k3=v3
+		// @ts=20250208-163600.301 @lv=err @src=logx_test.go:47 @msg="error message" span3.k3=v3
 	}
 
 	{
@@ -114,8 +115,8 @@ func ExampleLogger() {
 		ctx = logx.With(context.Background(), logx.New(handlers.Std()))
 		f(ctx, 2, 1)
 
-		// @ts=20250208-204404.397 @lv=err @src=github.com/xoctopus/logx_test/logx_test.go:101 @msg=span2 span1.depth=1 span1.span1/span2.depth=2
-		// @ts=20250208-204404.397 @lv=err @src=github.com/xoctopus/logx_test/logx_test.go:101 @msg=span1 span1.depth=1
+		// @ts=20250208-204404.397 @lv=err @src=logx_test/logx_test.go:101 @msg=span2 span1.depth=1 span1.span1/span2.depth=2
+		// @ts=20250208-204404.397 @lv=err @src=logx_test/logx_test.go:101 @msg=span1 span1.depth=1
 	}
 
 	{
@@ -129,10 +130,10 @@ func ExampleLogger() {
 		log.Error(errors.New("error message"))
 		log.End()
 
-		// {"@ts":"20251103-161757.172","@lv":"deb","@src":"github.com/xoctopus/logx_test/logx_test.go:118","@msg":"test 1","github.com/xoctopus/logx_test.ExampleLogger":{"k1":"v1"}}
-		// {"@ts":"20251103-161757.172","@lv":"inf","@src":"github.com/xoctopus/logx_test/logx_test.go:119","@msg":"test 1","github.com/xoctopus/logx_test.ExampleLogger":{"k1":"v1"}}
-		// {"@ts":"20251103-161757.172","@lv":"wrn","@src":"github.com/xoctopus/logx_test/logx_test.go:120","@msg":"error message","github.com/xoctopus/logx_test.ExampleLogger":{"k1":"v1"}}
-		// {"@ts":"20251103-161757.172","@lv":"err","@src":"github.com/xoctopus/logx_test/logx_test.go:121","@msg":"error message","github.com/xoctopus/logx_test.ExampleLogger":{"k1":"v1"}}
+		// {"@ts":"20251103-161757.172","@lv":"deb","@src":"logx_test/logx_test.go:118","@msg":"test 1","logx_test.ExampleLogger":{"k1":"v1"}}
+		// {"@ts":"20251103-161757.172","@lv":"inf","@src":"logx_test/logx_test.go:119","@msg":"test 1","logx_test.ExampleLogger":{"k1":"v1"}}
+		// {"@ts":"20251103-161757.172","@lv":"wrn","@src":"logx_test/logx_test.go:120","@msg":"error message","logx_test.ExampleLogger":{"k1":"v1"}}
+		// {"@ts":"20251103-161757.172","@lv":"err","@src":"logx_test/logx_test.go:121","@msg":"error message","logx_test.ExampleLogger":{"k1":"v1"}}
 	}
 
 	// Output:
@@ -241,4 +242,11 @@ func BenchmarkLoggers(b *testing.B) {
 			lzero.With("int", 1, "string", "string").Error(errors.New("fields"))
 		}
 	})
+}
+
+func BenchmarkEnter(b *testing.B) {
+	ctx := context.Background()
+	for range b.N {
+		_, _ = logx.Enter(ctx)
+	}
 }

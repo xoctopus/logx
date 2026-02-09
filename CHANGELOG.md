@@ -1,8 +1,18 @@
 
 <a name="HEAD"></a>
-## [HEAD](https://github.com/xoctopus/x/compare/v0.2.0...HEAD)
+## [HEAD](https://github.com/xoctopus/x/compare/v0.2.1...HEAD)
+
+> 0001-01-01
+
+
+<a name="v0.2.1"></a>
+## [v0.2.1](https://github.com/xoctopus/x/compare/v0.2.0...v0.2.1)
 
 > 2026-02-09
+
+### Chore
+
+* add logx.New helpers for different handler
 
 ### Doc
 
