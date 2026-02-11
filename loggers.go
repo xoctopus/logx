@@ -3,46 +3,37 @@ package logx
 import (
 	"context"
 	"fmt"
-	"log/slog"
 	"strings"
 
-	"github.com/xoctopus/logx/handlers"
+	"github.com/xoctopus/logx/internal"
 )
 
-func New(h slog.Handler) Logger {
+// NewStd creates a new logger with the slog.Logger.
+func NewStd() Logger {
 	return &std{
 		ctx: context.Background(),
-		l:   slog.New(h),
+		l:   internal.StdLogger(6),
 	}
 }
 
-func NewStd() Logger {
-	return New(handlers.Std())
-}
-
+// NewZap creates a new logger with the zap.Logger.
 func NewZap() Logger {
-	return New(handlers.Zap())
+	return &std{
+		ctx: context.Background(),
+		l:   internal.ZapLogger(2),
+	}
 }
 
-func NewZero() Logger {
-	return New(handlers.Zero())
-}
+var NewDefault = NewStd
 
 type std struct {
 	ctx   context.Context
-	l     *slog.Logger
+	l     internal.Logger
 	spans []string
 }
 
 func (s *std) Start(ctx context.Context, name string, kvs ...any) (context.Context, Logger) {
 	spans := append(s.spans, name)
-	if len(kvs) == 0 {
-		return ctx, &std{
-			ctx:   ctx,
-			l:     s.l.WithGroup(strings.Join(spans, "/")),
-			spans: spans,
-		}
-	}
 	return ctx, &std{
 		ctx:   ctx,
 		spans: spans,
@@ -65,27 +56,19 @@ func (s *std) With(kvs ...any) Logger {
 }
 
 func (s *std) Debug(msg string, args ...any) {
-	if s.l.Enabled(s.ctx, slog.LevelDebug) {
-		s.l.Log(s.ctx, slog.LevelDebug, fmt.Sprintf(msg, args...))
-	}
+	s.l.LogIfEnabled(s.ctx, LogLevelDebug, fmt.Sprintf(msg, args...))
 }
 
 func (s *std) Info(msg string, args ...any) {
-	if s.l.Enabled(s.ctx, slog.LevelInfo) {
-		s.l.Log(s.ctx, slog.LevelInfo, fmt.Sprintf(msg, args...))
-	}
+	s.l.LogIfEnabled(s.ctx, LogLevelInfo, fmt.Sprintf(msg, args...))
 }
 
 func (s *std) Warn(err error) {
-	if s.l.Enabled(s.ctx, slog.LevelWarn) && err != nil {
-		s.l.Log(s.ctx, slog.LevelWarn, err.Error())
-	}
+	s.l.LogIfEnabled(s.ctx, LogLevelWarn, err.Error())
 }
 
 func (s *std) Error(err error) {
-	if err != nil {
-		s.l.Log(s.ctx, slog.LevelError, err.Error())
-	}
+	s.l.LogIfEnabled(s.ctx, LogLevelError, err.Error())
 }
 
 func Discard() Logger {

@@ -23,10 +23,14 @@ type Printer interface {
 	Printf(string, ...any)
 }
 
+// Start starts span with name and kvs
 func Start(ctx context.Context, name string, kvs ...any) (context.Context, Logger) {
 	return From(ctx).Start(ctx, name, kvs...)
 }
 
+// Enter enters and starts span with caller string and kvs
+// Performance Note: to avoid the overhead of runtime.Caller, refrain from using
+// this function in performance-sensitive paths.
 func Enter(ctx context.Context, kvs ...any) (context.Context, Logger) {
 	pc, _, _, _ := runtime.Caller(1)
 	name := runtime.FuncForPC(pc).Name()

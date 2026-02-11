@@ -2,7 +2,11 @@
 <a name="HEAD"></a>
 ## [HEAD](https://github.com/xoctopus/x/compare/v0.2.1...HEAD)
 
-> 0001-01-01
+> 2026-02-09
+
+### Chore
+
+* optimize logx.Enter span name
 
 
 <a name="v0.2.1"></a>
