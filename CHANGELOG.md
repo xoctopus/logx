@@ -1,12 +1,36 @@
 
 <a name="HEAD"></a>
-## [HEAD](https://github.com/xoctopus/x/compare/v0.2.1...HEAD)
+## [HEAD](https://github.com/xoctopus/x/compare/v0.2.3...HEAD)
 
-> 2026-02-09
+> 2026-02-23
+
+### Chore
+
+* export default slog.Handler newer
+
+
+<a name="v0.2.3"></a>
+## [v0.2.3](https://github.com/xoctopus/x/compare/v0.2.2...v0.2.3)
+
+> 2026-02-11
+
+### Chore
+
+* remove dirty files and update ignore
+
+
+<a name="v0.2.2"></a>
+## [v0.2.2](https://github.com/xoctopus/x/compare/v0.2.1...v0.2.2)
+
+> 2026-02-11
 
 ### Chore
 
 * optimize logx.Enter span name
+
+### Feat
+
+* with zap.Logger underlying
 
 
 <a name="v0.2.1"></a>
