@@ -69,20 +69,20 @@ func replacer(_ []string, a slog.Attr) slog.Attr {
 	return a
 }
 
-func _newstd(w io.Writer, skip int) *slog.Logger {
+func _newstd(w io.Writer, skip int, level slog.Level) *slog.Logger {
 	h := &handler{
 		skip: skip,
 	}
 	if gLogFormat == LogFormatTEXT {
 		h.h = slog.NewTextHandler(w, &slog.HandlerOptions{
 			AddSource:   true,
-			Level:       gLogLevel,
+			Level:       level,
 			ReplaceAttr: replacer,
 		})
 	} else {
 		h.h = slog.NewJSONHandler(w, &slog.HandlerOptions{
 			AddSource:   true,
-			Level:       gLogLevel,
+			Level:       level,
 			ReplaceAttr: replacer,
 		})
 	}
@@ -110,9 +110,13 @@ func (s *_std) LogIfEnabled(ctx context.Context, lv LogLevel, msg string) {
 }
 
 func StdLogger(skip int) Logger {
-	return &_std{l: _newstd(os.Stderr, skip)}
+	return &_std{l: _newstd(os.Stderr, skip, gLogLevel)}
 }
 
 func StdDiscardLogger(skip int) Logger {
-	return &_std{l: _newstd(io.Discard, skip)}
+	return &_std{l: _newstd(io.Discard, skip, gLogLevel)}
+}
+
+func RawStdLogger(w io.Writer, skip int, level slog.Level) *slog.Logger {
+	return _newstd(w, skip, level)
 }

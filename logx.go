@@ -4,6 +4,8 @@ import (
 	"context"
 	"runtime"
 	"strings"
+
+	"github.com/xoctopus/logx/internal"
 )
 
 type Logger interface {
@@ -39,3 +41,5 @@ func Enter(ctx context.Context, kvs ...any) (context.Context, Logger) {
 	}
 	return From(ctx).Start(ctx, name, kvs...)
 }
+
+var NewRawStdLogger = internal.RawStdLogger
