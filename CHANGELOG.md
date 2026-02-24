@@ -1,12 +1,22 @@
 
 <a name="HEAD"></a>
-## [HEAD](https://github.com/xoctopus/x/compare/v0.2.3...HEAD)
+## [HEAD](https://github.com/xoctopus/x/compare/v0.2.4...HEAD)
+
+> 0001-01-01
+
+
+<a name="v0.2.4"></a>
+## [v0.2.4](https://github.com/xoctopus/x/compare/v0.2.3...v0.2.4)
 
 > 2026-02-23
 
 ### Chore
 
 * export default slog.Handler newer
+
+### Doc
+
+* update CHANGELOG
 
 
 <a name="v0.2.3"></a>

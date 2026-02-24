@@ -118,10 +118,18 @@ fmt: dep clean
 		-project-name ${MODULE_PATH} \
 		-excludes $(FORMAT_IGNORES) ./...
 
+fmt-check: fmt
+	@echo "==> checking code format"
+	@if [ -n "$$(git status --porcelain)" ]; then \
+		echo "code is not properly formatted."; \
+		exit 1; \
+	fi
+
 lint: dep
 	@echo "==> linting"
 	@echo ">>>golangci-lint"
 	@golangci-lint run
+	@go vet ./...
 	@echo "done"
 
 clean:
