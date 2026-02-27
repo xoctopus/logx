@@ -5,8 +5,9 @@ import (
 	"fmt"
 	"io"
 	"log/slog"
-	"os"
+	"reflect"
 
+	"github.com/xoctopus/x/reflectx"
 	"go.uber.org/zap"
 	"go.uber.org/zap/zapcore"
 )
@@ -14,7 +15,7 @@ import (
 func init() {
 }
 
-func _newzap(w io.Writer, skip int) *zap.Logger {
+func _newzap(w io.Writer, skip int, lv LogLevel) *zap.Logger {
 	cfg := zap.NewProductionConfig()
 	cfg.EncoderConfig.TimeKey = KEY_TIMESTAMP
 	cfg.EncoderConfig.LevelKey = KEY_LEVEL
@@ -41,7 +42,7 @@ func _newzap(w io.Writer, skip int) *zap.Logger {
 		cfg.Encoding = "console"
 	}
 
-	switch gLogLevel {
+	switch lv {
 	case LogLevelDebug:
 		cfg.Level.SetLevel(zapcore.DebugLevel)
 	case LogLevelInfo:
@@ -69,12 +70,12 @@ func _newzap(w io.Writer, skip int) *zap.Logger {
 	return l
 }
 
-func ZapLogger(skip int) Logger {
-	return &_zap{l: _newzap(os.Stderr, skip)}
+func ZapLogger(w io.Writer, skip int, lv LogLevel) Logger {
+	return &_zap{l: _newzap(w, skip, lv)}
 }
 
-func ZapDiscardLogger(skip int) Logger {
-	return &_zap{l: _newzap(io.Discard, skip)}
+func ZapDiscardLogger(skip int, lv LogLevel) Logger {
+	return ZapLogger(io.Discard, skip, lv)
 }
 
 type _zap struct {
@@ -113,12 +114,21 @@ func (z *_zap) With(kvs ...any) Logger {
 		if x, ok := kvs[0].(string); ok {
 			k = x
 		} else {
-			k += fmt.Sprintf("-%v", x)
+			k += fmt.Sprintf("%v", x)
 		}
 		if kvs = kvs[1:]; len(kvs) == 0 {
 			fields = append(fields, zap.String(k, MissingValue))
 		} else {
-			fields = append(fields, zap.Any(k, kvs[0]))
+			_, ok := sensitives[k]
+			if ok && reflectx.KindOf(kvs[0]) == reflect.String {
+				fields = append(fields, zap.String(k+"*", MASKED))
+			} else {
+				if x, ok := kvs[0].(SecurityStringer); ok {
+					fields = append(fields, zap.String(k, x.SecurityString()))
+				} else {
+					fields = append(fields, zap.Any(k, kvs[0]))
+				}
+			}
 			kvs = kvs[1:]
 		}
 	}

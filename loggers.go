@@ -3,6 +3,7 @@ package logx
 import (
 	"context"
 	"fmt"
+	"os"
 	"strings"
 
 	"github.com/xoctopus/logx/internal"
@@ -12,7 +13,7 @@ import (
 func NewStd() Logger {
 	return &std{
 		ctx: context.Background(),
-		l:   internal.StdLogger(6),
+		l:   internal.StdLogger(os.Stderr, 6, internal.GetLogLevel()),
 	}
 }
 
@@ -20,7 +21,15 @@ func NewStd() Logger {
 func NewZap() Logger {
 	return &std{
 		ctx: context.Background(),
-		l:   internal.ZapLogger(2),
+		l:   internal.ZapLogger(os.Stderr, 2, internal.GetLogLevel()),
+	}
+}
+
+// NewWithInstance creates a new logger with the LoggerInstance
+func NewWithInstance(l LoggerInstance) Logger {
+	return &std{
+		ctx: context.Background(),
+		l:   l,
 	}
 }
 

@@ -4,10 +4,12 @@ import (
 	"context"
 	"io"
 	"log/slog"
-	"os"
+	"reflect"
 	"runtime"
 	"strconv"
 	"strings"
+
+	"github.com/xoctopus/x/reflectx"
 )
 
 type handler struct {
@@ -39,9 +41,15 @@ func replacer(_ []string, a slog.Attr) slog.Attr {
 		a.Value = slog.StringValue(a.Value.Time().Format(TIME_FORMAT))
 	}
 
-	x, ok := a.Value.Any().(interface{ SecurityString() string })
-	if ok {
+	v := a.Value.Any()
+	if x, ok := v.(SecurityStringer); ok {
 		a.Value = slog.StringValue(x.SecurityString())
+	} else {
+		_, ok = sensitives[a.Key]
+		if ok && reflectx.KindOf(v) == reflect.String {
+			a.Key = a.Key + "*"
+			a.Value = slog.StringValue(MASKED)
+		}
 	}
 
 	switch a.Key {
@@ -61,10 +69,6 @@ func replacer(_ []string, a slog.Attr) slog.Attr {
 		}
 		loc := strings.Join(parts, "/")
 		a.Value = slog.StringValue(loc + ":" + strconv.Itoa(s.Line))
-	case "password":
-		if !ok {
-			a.Value = slog.StringValue("--------")
-		}
 	}
 	return a
 }
@@ -109,14 +113,14 @@ func (s *_std) LogIfEnabled(ctx context.Context, lv LogLevel, msg string) {
 	}
 }
 
-func StdLogger(skip int) Logger {
-	return &_std{l: _newstd(os.Stderr, skip, gLogLevel)}
+func StdLogger(w io.Writer, skip int, lv LogLevel) Logger {
+	return &_std{l: _newstd(w, skip, lv)}
 }
 
-func StdDiscardLogger(skip int) Logger {
-	return &_std{l: _newstd(io.Discard, skip, gLogLevel)}
+func StdDiscardLogger(skip int, lv LogLevel) Logger {
+	return StdLogger(io.Discard, skip, lv)
 }
 
-func RawStdLogger(w io.Writer, skip int, level slog.Level) *slog.Logger {
-	return _newstd(w, skip, level)
+func NawStdLogger(w io.Writer, skip int, lv slog.Level) *slog.Logger {
+	return _newstd(w, skip, lv)
 }

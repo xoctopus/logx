@@ -5,6 +5,7 @@ import (
 	"io"
 	"log/slog"
 	"net/url"
+	"os"
 	"testing"
 	"time"
 
@@ -156,30 +157,36 @@ func BenchmarkLoggers(b *testing.B) {
 
 	b.Run("1x", func(b *testing.B) {
 		b.Run("std", func(b *testing.B) {
-			bf1x(b, StdDiscardLogger(5))
+			bf1x(b, StdDiscardLogger(5, LogLevelError))
 		})
 		b.Run("zap", func(b *testing.B) {
-			bf1x(b, ZapDiscardLogger(1))
+			bf1x(b, ZapDiscardLogger(1, LogLevelError))
 		})
 	})
 
 	b.Run("4x", func(b *testing.B) {
 		b.Run("std", func(b *testing.B) {
-			bf4x(b, StdDiscardLogger(5))
+			bf4x(b, StdDiscardLogger(5, LogLevelError))
 		})
 		b.Run("zap", func(b *testing.B) {
-			bf4x(b, ZapDiscardLogger(1))
+			bf4x(b, ZapDiscardLogger(1, LogLevelError))
 		})
 	})
 
 	b.Run("8x", func(b *testing.B) {
 		b.Run("std", func(b *testing.B) {
-			bf8x(b, StdDiscardLogger(5))
+			bf8x(b, StdDiscardLogger(5, LogLevelError))
 		})
 		b.Run("zap", func(b *testing.B) {
-			bf8x(b, ZapDiscardLogger(1))
+			bf8x(b, ZapDiscardLogger(1, LogLevelError))
 		})
 	})
+}
+
+type Password string
+
+func (Password) SecurityString() string {
+	return "--masked--"
 }
 
 func TestUnderlyings(t *testing.T) {
@@ -189,16 +196,34 @@ func TestUnderlyings(t *testing.T) {
 	SetLogFormat(LogFormatJSON)
 
 	t.Run("std", func(t *testing.T) {
-		l := StdLogger(5)
+		l := StdLogger(os.Stderr, 5, GetLogLevel())
 		l.With("k1", "v1").LogIfEnabled(ctx, LogLevelDebug, "test")
-		l.WithGroup("std").With("k1", "v1").LogIfEnabled(ctx, LogLevelDebug, "test")
-		l.WithGroup("std").With("k1", "v1").WithGroup("inner").With("k2", "v2").LogIfEnabled(ctx, LogLevelDebug, "test")
+		l.WithGroup("std").
+			With("k1", "v1").
+			With("k2", time.Now()).
+			With("k3", Password("password")).
+			With("password", "password").
+			LogIfEnabled(ctx, LogLevelDebug, "test")
+		l.WithGroup("std").
+			With("k1", "v1").
+			WithGroup("inner").
+			With("k2", "v2").
+			LogIfEnabled(ctx, LogLevelDebug, "test")
 	})
 
 	t.Run("zap", func(t *testing.T) {
-		l := ZapLogger(1)
+		l := ZapLogger(os.Stderr, 1, GetLogLevel())
 		l.With("k1", "v1").LogIfEnabled(ctx, LogLevelDebug, "test")
-		l.WithGroup("std").With("k1", "v1").LogIfEnabled(ctx, LogLevelDebug, "test")
-		l.WithGroup("std").With("k1", "v1").WithGroup("inner").With("k2", "v2").LogIfEnabled(ctx, LogLevelDebug, "test")
+		l.WithGroup("zap").
+			With("k1", "v1").
+			With("k2", time.Now()).
+			With("k3", Password("password")).
+			With("password", "password").
+			LogIfEnabled(ctx, LogLevelDebug, "test")
+		l.WithGroup("zap").
+			With("k1", "v1").
+			WithGroup("inner").
+			With("k2", "v2").
+			LogIfEnabled(ctx, LogLevelDebug, "test")
 	})
 }

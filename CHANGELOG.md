@@ -1,8 +1,18 @@
 
 <a name="HEAD"></a>
-## [HEAD](https://github.com/xoctopus/x/compare/v0.2.4...HEAD)
+## [HEAD](https://github.com/xoctopus/x/compare/v0.2.5...HEAD)
 
 > 0001-01-01
+
+
+<a name="v0.2.5"></a>
+## [v0.2.5](https://github.com/xoctopus/x/compare/v0.2.4...v0.2.5)
+
+> 2026-02-25
+
+### Feat
+
+* add consts exports
 
 
 <a name="v0.2.4"></a>

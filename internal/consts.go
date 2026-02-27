@@ -30,6 +30,10 @@ func SetLogLevel(lv LogLevel) {
 	gLogLevel = lv
 }
 
+func GetLogLevel() LogLevel {
+	return gLogLevel
+}
+
 var gLevelString = map[slog.Level]string{
 	slog.LevelDebug: "deb",
 	slog.LevelInfo:  "inf",
@@ -45,3 +49,23 @@ const (
 )
 
 const TIME_FORMAT = "20060102-150405.000"
+
+var sensitives = map[string]struct{}{
+	"password":      {},
+	"passwd":        {},
+	"pass":          {},
+	"credential":    {},
+	"secret":        {},
+	"token":         {},
+	"apikey":        {},
+	"signature":     {},
+	"authorization": {},
+	"email":         {},
+	"phone":         {},
+}
+
+type SecurityStringer interface {
+	SecurityString() string
+}
+
+const MASKED = "--masked--"

@@ -10,8 +10,9 @@ var (
 )
 
 type (
-	LogFormat = internal.LogFormat
-	LogLevel  = internal.LogLevel
+	LogFormat      = internal.LogFormat
+	LogLevel       = internal.LogLevel
+	LoggerInstance = internal.Logger
 )
 
 const (

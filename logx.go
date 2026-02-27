@@ -42,4 +42,10 @@ func Enter(ctx context.Context, kvs ...any) (context.Context, Logger) {
 	return From(ctx).Start(ctx, name, kvs...)
 }
 
-var NewRawStdLogger = internal.RawStdLogger
+var (
+	NewRawStdLogger  = internal.NawStdLogger
+	StdLogger        = internal.StdLogger
+	StdDiscardLogger = internal.StdDiscardLogger
+	ZapLogger        = internal.ZapLogger
+	ZapDiscardLogger = internal.ZapDiscardLogger
+)
