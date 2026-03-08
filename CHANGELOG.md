@@ -1,8 +1,18 @@
 
 <a name="HEAD"></a>
-## [HEAD](https://github.com/xoctopus/x/compare/v0.2.5...HEAD)
+## [HEAD](https://github.com/xoctopus/x/compare/v0.2.6...HEAD)
 
 > 0001-01-01
+
+
+<a name="v0.2.6"></a>
+## [v0.2.6](https://github.com/xoctopus/x/compare/v0.2.5...v0.2.6)
+
+> 2026-02-27
+
+### Feat
+
+* enhance sensitive content
 
 
 <a name="v0.2.5"></a>
