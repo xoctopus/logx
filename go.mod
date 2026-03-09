@@ -2,7 +2,7 @@ module github.com/xoctopus/logx
 
 go 1.26.0
 
-require github.com/xoctopus/x v0.4.0
+require github.com/xoctopus/x v0.4.1
 
 require go.uber.org/zap v1.27.1
 
