@@ -2,11 +2,11 @@ package internal
 
 import (
 	"context"
+	"fmt"
 	"io"
 	"log/slog"
 	"reflect"
 	"runtime"
-	"strconv"
 	"strings"
 
 	"github.com/xoctopus/x/reflectx"
@@ -68,7 +68,7 @@ func replacer(_ []string, a slog.Attr) slog.Attr {
 			parts = parts[l-2 : l]
 		}
 		loc := strings.Join(parts, "/")
-		a.Value = slog.StringValue(loc + ":" + strconv.Itoa(s.Line))
+		a.Value = slog.StringValue(fmt.Sprintf("%s:%03d", loc, s.Line))
 	}
 	return a
 }
