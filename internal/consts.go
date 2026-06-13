@@ -1,15 +1,42 @@
 package internal
 
-import "log/slog"
+import (
+	"fmt"
+	"log/slog"
+	"strings"
+)
 
 type LogFormat uint8
+
+var gLogFormat = LogFormatJSON
 
 const (
 	LogFormatJSON LogFormat = iota
 	LogFormatTEXT
 )
 
-var gLogFormat = LogFormatJSON
+func (f LogFormat) MarshalText() ([]byte, error) {
+	switch f {
+	case LogFormatTEXT:
+		return []byte("TEXT"), nil
+	case LogFormatJSON:
+		return []byte("JSON"), nil
+	default:
+		return nil, fmt.Errorf("unknown log format: %d", f)
+	}
+}
+
+func (f *LogFormat) UnmarshalText(data []byte) error {
+	switch v := strings.ToUpper(string(data)); v {
+	case "JSON":
+		*f = LogFormatJSON
+	case "TEXT":
+		*f = LogFormatTEXT
+	default:
+		return fmt.Errorf("unknown log format: %s", string(data))
+	}
+	return nil
+}
 
 func SetLogFormat(f LogFormat) {
 	gLogFormat = f
