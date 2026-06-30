@@ -2,9 +2,9 @@ module github.com/xoctopus/logx
 
 go 1.26.4
 
-require github.com/xoctopus/x v0.4.0
+require github.com/xoctopus/x v0.4.9
 
-require go.uber.org/zap v1.27.1
+require go.uber.org/zap v1.28.0
 
 require (
 	github.com/davecgh/go-spew v1.1.2-0.20180830191138-d8f796af33cc // indirect

@@ -12,9 +12,6 @@ import (
 	"go.uber.org/zap/zapcore"
 )
 
-func init() {
-}
-
 func _newzap(w io.Writer, skip int, lv LogLevel) *zap.Logger {
 	cfg := zap.NewProductionConfig()
 	cfg.EncoderConfig.TimeKey = KEY_TIMESTAMP

@@ -1,8 +1,42 @@
 
 <a name="HEAD"></a>
-## [HEAD](https://github.com/xoctopus/x/compare/v0.2.6...HEAD)
+## [HEAD](https://github.com/xoctopus/x/compare/v0.3.2...HEAD)
 
 > 0001-01-01
+
+
+<a name="v0.3.2"></a>
+## [v0.3.2](https://github.com/xoctopus/x/compare/v0.3.1...v0.3.2)
+
+> 2026-06-14
+
+### Feat
+
+* LogFormat arshaler
+
+
+<a name="v0.3.1"></a>
+## [v0.3.1](https://github.com/xoctopus/x/compare/v0.3.0...v0.3.1)
+
+> 2026-03-11
+
+### Chore
+
+* fileline width
+
+
+<a name="v0.3.0"></a>
+## [v0.3.0](https://github.com/xoctopus/x/compare/v0.2.6...v0.3.0)
+
+> 2026-03-08
+
+### Chore
+
+* **deps:** bump xoctopus/x to v0.4.0
+
+### Ci
+
+* update Makefile
 
 
 <a name="v0.2.6"></a>

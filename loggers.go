@@ -3,6 +3,7 @@ package logx
 import (
 	"context"
 	"fmt"
+	"log/slog"
 	"os"
 	"strings"
 
@@ -64,6 +65,18 @@ func (s *std) With(kvs ...any) Logger {
 	}
 }
 
+func (s *std) WithAttr(attrs ...slog.Attr) Logger {
+	kvs := make([]any, len(attrs)*2)
+	for i := range attrs {
+		kvs = append(kvs, attrs[i].Key, attrs[i].Value.Any())
+	}
+	return &std{
+		ctx:   s.ctx,
+		spans: s.spans,
+		l:     s.l.With(kvs...),
+	}
+}
+
 func (s *std) Debug(msg string, args ...any) {
 	s.l.LogIfEnabled(s.ctx, LogLevelDebug, fmt.Sprintf(msg, args...))
 }
@@ -94,6 +107,10 @@ func (d discard) End() {
 }
 
 func (d discard) With(kvs ...any) Logger {
+	return d
+}
+
+func (d discard) WithAttr(attrs ...slog.Attr) Logger {
 	return d
 }
 

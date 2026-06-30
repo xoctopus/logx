@@ -4,6 +4,7 @@ import (
 	"context"
 	"runtime"
 	"strings"
+	"sync"
 
 	"github.com/xoctopus/logx/internal"
 )
@@ -30,12 +31,19 @@ func Start(ctx context.Context, name string, kvs ...any) (context.Context, Logge
 	return From(ctx).Start(ctx, name, kvs...)
 }
 
+var pcs = sync.Pool{New: func() any { return new([1]uintptr) }}
+
 // Enter enters and starts span with caller string and kvs
 // Performance Note: to avoid the overhead of runtime.Caller, refrain from using
 // this function in performance-sensitive paths.
 func Enter(ctx context.Context, kvs ...any) (context.Context, Logger) {
-	pc, _, _, _ := runtime.Caller(1)
-	name := runtime.FuncForPC(pc).Name()
+	//	pc, _, _, _ := runtime.Caller(1)
+	pc := pcs.Get().(*[1]uintptr)
+	defer pcs.Put(pc)
+
+	runtime.Callers(2, pc[:])
+
+	name := runtime.FuncForPC(pc[0]).Name()
 	if idx := strings.LastIndex(name, "/"); idx != -1 {
 		name = name[idx+1:]
 	}
