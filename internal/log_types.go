@@ -8,7 +8,6 @@ type Logger interface {
 	LogIfEnabled(ctx context.Context, lv LogLevel, msg string)
 }
 
-const (
-	BadKey       = "!BADKEY"
-	MissingValue = "!MISSINGVALUE"
-)
+type SecurityStringer interface {
+	SecurityString() string
+}

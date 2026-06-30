@@ -148,5 +148,5 @@ func zaplevel(lv slog.Level) zapcore.Level {
 }
 
 func (z *_zap) LogIfEnabled(_ context.Context, lv LogLevel, msg string) {
-	z.l.Log(zaplevel(lv), msg)
+	z.l.Log(zaplevel(lv.Level()), msg)
 }

@@ -57,7 +57,7 @@ func replacer(_ []string, a slog.Attr) slog.Attr {
 		a.Key = KEY_TIMESTAMP
 	case slog.LevelKey:
 		a.Key = KEY_LEVEL
-		a.Value = slog.StringValue(gLevelString[a.Value.Any().(slog.Level)])
+		a.Value = slog.StringValue(gLevelString[LogLevel(a.Value.Any().(slog.Level))])
 	case slog.MessageKey:
 		a.Key = KEY_MESSAGE
 	case slog.SourceKey:
@@ -73,7 +73,7 @@ func replacer(_ []string, a slog.Attr) slog.Attr {
 	return a
 }
 
-func _newstd(w io.Writer, skip int, level slog.Level) *slog.Logger {
+func _newstd(w io.Writer, skip int, level LogLevel) *slog.Logger {
 	h := &handler{
 		skip: skip,
 	}
@@ -108,8 +108,8 @@ func (s *_std) WithGroup(name string) Logger {
 }
 
 func (s *_std) LogIfEnabled(ctx context.Context, lv LogLevel, msg string) {
-	if s.l.Enabled(ctx, lv) {
-		s.l.Log(ctx, lv, msg)
+	if s.l.Enabled(ctx, lv.Level()) {
+		s.l.Log(ctx, lv.Level(), msg)
 	}
 }
 
@@ -122,5 +122,5 @@ func StdDiscardLogger(skip int, lv LogLevel) Logger {
 }
 
 func NawStdLogger(w io.Writer, skip int, lv slog.Level) *slog.Logger {
-	return _newstd(w, skip, lv)
+	return _newstd(w, skip, LogLevel(lv))
 }
