@@ -1,8 +1,24 @@
 
 <a name="HEAD"></a>
-## [HEAD](https://github.com/xoctopus/x/compare/v0.3.3...HEAD)
+## [HEAD](https://github.com/xoctopus/x/compare/v0.3.5...HEAD)
 
 > 0001-01-01
+
+
+<a name="v0.3.5"></a>
+## [v0.3.5](https://github.com/xoctopus/x/compare/v0.3.4...v0.3.5)
+
+> 2026-07-13
+
+
+<a name="v0.3.4"></a>
+## [v0.3.4](https://github.com/xoctopus/x/compare/v0.3.3...v0.3.4)
+
+> 2026-07-01
+
+### Feat
+
+* **internal:** add log level arshaler
 
 
 <a name="v0.3.3"></a>

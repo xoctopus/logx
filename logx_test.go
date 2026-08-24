@@ -183,3 +183,85 @@ func BenchmarkEnter(b *testing.B) {
 		}
 	})
 }
+
+func step1() (any, error) {
+	return 1, nil
+}
+
+func step2() error {
+	return errors.New("step2 failed")
+}
+
+func ExampleLogger_record() {
+	var (
+		ctx = context.Background()
+		err error
+	)
+
+	log := logx.From(ctx)
+
+	defer func() {
+		if err != nil {
+			log.Error(err)
+		} else {
+			log.Info("example finished")
+		}
+	}()
+
+	v, err := step1()
+	if err != nil {
+		// wrap error if needed
+		return
+	}
+	// with step info if needed
+	log = log.With("step1_result", v)
+
+	if err = step2(); err != nil {
+		// wrap error if needed
+		return
+	}
+	// other steps...
+	// output like:
+	// {"@ts":"20260824-145951.733","@lv":"err","@src":"logx/logx_test.go:205","@msg":"step2 failed","step1_result":1}
+	return
+
+	// Output:
+	//
+}
+
+func ExampleLogger_span() {
+	var (
+		ctx = context.Background()
+		err error
+	)
+
+	ctx, log := logx.Start(ctx, "span_name")
+
+	defer func() {
+		if err != nil {
+			log.Error(err)
+		} else {
+			log.Info("example finished")
+		}
+	}()
+
+	v, err := step1()
+	if err != nil {
+		// wrap error if needed
+		return
+	}
+	// with step info if needed
+	log = log.With("step1_result", v)
+
+	if err = step2(); err != nil {
+		// wrap error if needed
+		return
+	}
+	// other steps...
+	// output like:
+	// {"@ts":"20260824-145933.653","@lv":"err","@src":"logx/logx_test.go:240","@msg":"step2 failed","span_name":{"step1_result":1}}
+	return
+
+	// Output:
+	//
+}
