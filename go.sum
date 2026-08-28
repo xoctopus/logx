@@ -6,8 +6,8 @@ github.com/pmezard/go-difflib v1.0.1-0.20181226105442-5d4384ee4fb2 h1:Jamvg5psRI
 github.com/pmezard/go-difflib v1.0.1-0.20181226105442-5d4384ee4fb2/go.mod h1:iKH77koFhYxTK1pcRnkKkqfTogsbg7gZNVY4sRDYZ/4=
 github.com/stretchr/testify v1.11.1 h1:7s2iGBzp5EwR7/aIZr8ao5+dra3wiQyKjjFuvgVKu7U=
 github.com/stretchr/testify v1.11.1/go.mod h1:wZwfW3scLgRK+23gO65QZefKpKQRnfz6sD981Nm4B6U=
-github.com/xoctopus/x v0.4.9 h1:m6bkyMzBTTxcGnz99GJ4CvKBlCFU3K4CiQnpaeYA7PI=
-github.com/xoctopus/x v0.4.9/go.mod h1:kin3VJXnfa6Jk/2gqhjoTzZ7uA9dQtPc37ViYAr2oP8=
+github.com/xoctopus/x v0.5.8 h1:m6pa4OTvlHYIeUV5cRenTnQ0TVMPZ+3Op5RIxpCwP4k=
+github.com/xoctopus/x v0.5.8/go.mod h1:lFgGXQGELYsGXSaiQBQTpJxXe0THG/72KT+heflzTtU=
 go.uber.org/goleak v1.3.0 h1:2K3zAYmnTNqV73imy9J1T3WC+gmCePx2hEGkimedGto=
 go.uber.org/goleak v1.3.0/go.mod h1:CoHD4mav9JJNrW/WLlf7HGZPjdw8EucARQHekz1X6bE=
 go.uber.org/multierr v1.11.0 h1:blXXJkSxSSfBVBlC76pxqeO+LN3aDfLQo+309xJstO0=
