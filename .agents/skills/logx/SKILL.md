@@ -1,11 +1,8 @@
 ---
 name: logx
-description:
-  - 说明如何用 `github.com/xoctopus/logx` 做结构化日志与 span 上下文
-  - Logger: Start / Enter / With / Debug·Info·Warn·Error / End
-  - context 注入: With / From / Carry
-  - 后端: NewStd (slog) / NewZap / Discard; 级别与格式 SetLogLevel / SetLogFormat
-  - 当需要在宿主项目接入 logx, 选型 std/zap, 或排查 span/敏感字段时使用
+description: >-
+  说明如何用 `github.com/xoctopus/logx` 做结构化日志与 span 上下文.
+  当需要在宿主项目接入 logx, 选型 std/zap 后端, 或排查 span / 敏感字段时使用.
 ---
 
 # logx
@@ -13,6 +10,16 @@ description:
 - 模块: `github.com/xoctopus/logx`
 - 包文档: `go doc github.com/xoctopus/logx`
 - 面向应用侧的轻量日志门面: context 携带 Logger, span 分组字段, slog/zap 后端
+
+能力概览:
+
+| 能力         | API                                                                 |
+|--------------|---------------------------------------------------------------------|
+| Logger       | `Start` / `Enter` / `With` / `Debug` `Info` `Warn` `Error` / `End`  |
+| context 注入 | `With(ctx, l)` / `From(ctx)` / `Carry(l)`                           |
+| 后端         | `NewStd` (slog) / `NewZap` / `Discard` / `NewWithInstance`          |
+| 级别与格式   | `SetLogLevel` / `SetLogFormat`                                      |
+| 敏感字段     | 常见敏感 key 自动脱敏; `SecurityStringer` 自定义                    |
 
 ## 选型
 
