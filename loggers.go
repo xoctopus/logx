@@ -5,6 +5,7 @@ import (
 	"fmt"
 	"log/slog"
 	"os"
+	"slices"
 	"strings"
 
 	"github.com/xoctopus/logx/internal"
@@ -43,12 +44,13 @@ type std struct {
 }
 
 func (s *std) Start(ctx context.Context, name string, kvs ...any) (context.Context, Logger) {
-	spans := append(s.spans, name)
-	return ctx, &std{
-		ctx:   ctx,
+	spans := append(slices.Clip(s.spans), name)
+	l := &std{
 		spans: spans,
 		l:     s.l.WithGroup(strings.Join(spans, "/")).With(kvs...),
 	}
+	l.ctx = With(ctx, l)
+	return l.ctx, l
 }
 
 func (s *std) End() {

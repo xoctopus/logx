@@ -1,8 +1,53 @@
 
 <a name="HEAD"></a>
-## [HEAD](https://github.com/xoctopus/x/compare/v0.3.5...HEAD)
+## [HEAD](https://github.com/xoctopus/x/compare/v0.3.9...HEAD)
 
-> 0001-01-01
+> 2026-10-28
+
+### Chore
+
+* bump go to 1.27.3 and refresh Makefile, CI and lint config
+* upgrade dependencies
+
+
+<a name="v0.3.9"></a>
+## [v0.3.9](https://github.com/xoctopus/x/compare/v0.3.8...v0.3.9)
+
+> 2026-09-05
+
+### Docs
+
+* **skills:** fix logx SKILL.md frontmatter and add capability overview
+
+
+<a name="v0.3.8"></a>
+## [v0.3.8](https://github.com/xoctopus/x/compare/v0.3.7...v0.3.8)
+
+> 2026-08-28
+
+### Chore
+
+* bump Go to 1.27.0
+
+
+<a name="v0.3.7"></a>
+## [v0.3.7](https://github.com/xoctopus/x/compare/v0.3.6...v0.3.7)
+
+> 2026-08-24
+
+### Fix
+
+* **agents:** move skill under .agents/skills/logx
+
+
+<a name="v0.3.6"></a>
+## [v0.3.6](https://github.com/xoctopus/x/compare/v0.3.5...v0.3.6)
+
+> 2026-08-24
+
+### Doc
+
+* add package docs, agent skill, and usage examples
 
 
 <a name="v0.3.5"></a>

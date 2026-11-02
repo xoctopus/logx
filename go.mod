@@ -3,7 +3,7 @@ module github.com/xoctopus/logx
 go 1.27.3
 
 require (
-	github.com/xoctopus/x v0.5.9
+	github.com/xoctopus/x v0.6.0
 	go.uber.org/zap v1.28.0
 )
 

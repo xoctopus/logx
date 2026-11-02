@@ -265,3 +265,20 @@ func ExampleLogger_span() {
 	// Output:
 	//
 }
+
+func TestStartCarriesSpanInContext(t *testing.T) {
+	ctx := logx.With(context.Background(), logx.NewStd())
+
+	ctx1, l1 := logx.Start(ctx, "a")
+	if logx.From(ctx1) != l1 {
+		t.Fatal("Start should carry the span logger in returned context")
+	}
+	if logx.From(ctx) == l1 {
+		t.Fatal("Start should not mutate parent context")
+	}
+
+	ctx2, l2 := logx.Start(ctx1, "b")
+	if logx.From(ctx2) != l2 {
+		t.Fatal("nested Start should carry the nested span logger")
+	}
+}
