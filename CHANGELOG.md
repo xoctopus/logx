@@ -1,8 +1,12 @@
 
 <a name="HEAD"></a>
-## [HEAD](https://github.com/xoctopus/x/compare/v0.3.9...HEAD)
+## [HEAD](https://github.com/xoctopus/logx/compare/v0.3.9...HEAD)
 
 > 2026-10-28
+
+### Docs
+
+* deprecate module in favor of github.com/xoctopus/x/logx
 
 ### Chore
 

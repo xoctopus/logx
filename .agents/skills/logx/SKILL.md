@@ -1,14 +1,17 @@
 ---
 name: logx
 description: >-
-  说明如何用 `github.com/xoctopus/logx` 做结构化日志与 span 上下文.
+  说明如何用 logx 做结构化日志与 span 上下文.
   当需要在宿主项目接入 logx, 选型 std/zap 后端, 或排查 span / 敏感字段时使用.
+  注意: 独立模块 github.com/xoctopus/logx 已废弃, 请改用 github.com/xoctopus/x/logx.
 ---
 
 # logx
 
-- 模块: `github.com/xoctopus/logx`
-- 包文档: `go doc github.com/xoctopus/logx`
+> **Deprecated:** 独立模块 `github.com/xoctopus/logx` 已并入 `github.com/xoctopus/x/logx`. 新代码请用后者.
+
+- 模块: `github.com/xoctopus/x/logx` (canonical); `github.com/xoctopus/logx` 过渡期仍可用
+- 包文档: `go doc github.com/xoctopus/x/logx`
 - 面向应用侧的轻量日志门面: context 携带 Logger, span 分组字段, slog/zap 后端
 
 能力概览:

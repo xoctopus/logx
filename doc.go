@@ -2,6 +2,10 @@
 Package logx is a lightweight logging facade for applications: carry a [Logger]
 on context, open spans with structured fields, and emit via slog or zap.
 
+Deprecated: use [github.com/xoctopus/x/logx] instead. This module will be
+removed after downstreams migrate. The implementation has moved into the x
+module; keep imports on this path only during the transition.
+
 Construct a backend with [NewStd], [NewZap], [NewWithInstance], or [Discard],
 then attach it with [With] / [Carry]. Downstream code should [From] the context
 and open spans with [Start] or [Enter].
